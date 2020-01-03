@@ -3,6 +3,7 @@ package httpHandle
 import (
 	"github.com/coderguang/GameEngine_go/sgfile"
 	"github.com/coderguang/GameEngine_go/sgstring"
+	"io/ioutil"
 	"github.com/coderguang/GameEngine_go/sgnet/sghttp"
 	"github.com/coderguang/GameEngine_go/sglog"
 	"net/http"
@@ -23,18 +24,23 @@ func ReceiveClientData(w http.ResponseWriter, r *http.Request, flag chan bool) {
 		return 
 	}
 
-	file,_,err:=sghttp.CheckIsAllowFiles(w,r,[]string{"img","jpg"})
-	if err!=nil{
-		sglog.Error("file type not allow",err)
-		return
+	file, _, err := r.FormFile("sg")	
+	if err != nil {	
+		sglog.Error("get form data error,",err)
+		return 
 	}
-	defer file.Close()
 
-	fileBytes,err:=sghttp.CheckFileTypeMatch(w,r,"jpg",file)
-
+	contentType,err:=sghttp.GetFileDetectContentType(file)
 	if err!=nil{
-		sglog.Error("file type invalid",err)
-		return
+		sglog.Error("get form file detect type error,",contentType,err)
+	}
+
+	sglog.Info("contentType:",contentType)
+
+	fileBytes, err := ioutil.ReadAll(file)
+	if err != nil {
+		sglog.Error("read all file error:",err)
+		return 
 	}
 
 	filePath:="./data/"
