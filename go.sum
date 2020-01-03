@@ -11,6 +11,7 @@ github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/coderguang/GameEngine_go v1.8.0 h1:hyeQQrBqEr2Ej9vJZAwdOKMoCNy81+i9E+mB6MAMqcg=
 github.com/coderguang/GameEngine_go v1.8.0/go.mod h1:keL3eftPAfnvlegFmqA/sjPUfeUwRiVcXpRSQs3MVIs=
+github.com/coderguang/YY_go/server v0.0.0-20200102094803-e025b5fffd40 h1:X/+WWZ+JKCqILxpreQT7Pyh7Eki9aI68dW9wgAbWUX4=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/denisenkom/go-mssqldb v0.0.0-20190515213511-eb9f6a1743f3/go.mod h1:zAg7JM8CkOJ43xKXIj7eRO9kmWm/TW578qo+oDO6tuM=
 github.com/eapache/go-resiliency v1.1.0/go.mod h1:kFI+JgMyC7bLPUVY133qvEBtVayf5mFgVsvEsIPBvNs=

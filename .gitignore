@@ -13,6 +13,7 @@ debug
 debug.test
 *__debug_bin*
 /log/*
+/data/*
 
 # Test binary, build with `go test -c`
 *.test

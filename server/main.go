@@ -1,6 +1,7 @@
 package main
 
 import (
+	"server/src/httpHandle"
 	"log"
 
 	"github.com/coderguang/GameEngine_go/sgcmd"
@@ -12,6 +13,9 @@ func main() {
 	sgserver.StartServer(sgserver.ServerTypeLog, "debug", "./log/", log.LstdFlags, true)
 
 	sglog.Info("start YY listen server...")
+
+
+	go httpHandle.NewWebServer("7000");
 
 	sgcmd.StartCmdWaitInputLoop()
 }
