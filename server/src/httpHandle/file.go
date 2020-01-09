@@ -117,16 +117,6 @@ func ReceiveMultiClientData(w http.ResponseWriter,r *http.Request,flag chan bool
 		if filename==""{
 
 		}else{
-			// file,_,err:=r.FormFile(name)
-			// if err!=nil{
-			// 	sglog.Error("read file error,file:",file,err)
-			// 	continue;
-			// }
-			// fileBytes,err:=ioutil.ReadAll(file)
-			// if err!=nil{
-			// 	sglog.Error("read data from file error,file:",file,err)
-			// 	continue
-			// }
 			fileBytes:=make([]byte,10000)
 			num,err:=part.Read(fileBytes)
 			if err!=nil&&err!=io.EOF{
@@ -137,7 +127,11 @@ func ReceiveMultiClientData(w http.ResponseWriter,r *http.Request,flag chan bool
 			part.Close()
 
 			filePath:="./data/"
-			wrieteFileName:=sgstring.RandStringAndNumRunes(4)
+			wrieteFileName,err:=sgfile.GetFileName(filename)
+			if err!=nil{
+				sglog.Error("unknow filename,err:",filename,err)
+				wrieteFileName="unknow_"+sgstring.RandNumStringRunes(5)
+			}
 			if _,_,err:=sgfile.WriteFile(filePath,wrieteFileName,fileBytes[:num]);err!=nil{
 				sglog.Error("write to file file error,file:",wrieteFileName,err)
 				continue
