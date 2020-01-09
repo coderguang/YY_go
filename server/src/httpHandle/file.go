@@ -56,6 +56,40 @@ func ReceiveClientData(w http.ResponseWriter, r *http.Request, flag chan bool) {
 }
 
 
+func TryReceiveOne(w http.ResponseWriter,r *http.Request,flag chan bool){
+	defer func(){
+		flag<- true
+	}()
+
+	
+	_,err:=r.MultipartReader()
+
+	if err!=nil{
+		sglog.Error("r.MultipartReader err",err);
+		return
+	}	
+
+	filename:="pic"
+	file,_,err:=r.FormFile(filename)
+	if err!=nil{
+		sglog.Error("read file error,file:",file,err)
+		return;
+	}
+	fileBytes,err:=ioutil.ReadAll(file)
+	if err!=nil{
+		sglog.Error("read data from file error,file:",file,err)
+		return
+	}
+	filePath:="./data/"
+	if _,_,err:=sgfile.WriteFile(filePath,filename,fileBytes);err!=nil{
+		sglog.Error("write to file file error,file:",file,err)
+		return
+	}
+	sglog.Info("receive ",filename,",complete by try")
+}
+
+
+
 func ReceiveMultiClientData(w http.ResponseWriter,r *http.Request,flag chan bool){
 	defer func(){
 		flag<- true
@@ -83,19 +117,29 @@ func ReceiveMultiClientData(w http.ResponseWriter,r *http.Request,flag chan bool
 		if filename==""{
 
 		}else{
-			file,_,err:=r.FormFile(name)
-			if err!=nil{
-				sglog.Error("read file error,file:",file,err)
-				continue;
-			}
-			fileBytes,err:=ioutil.ReadAll(file)
-			if err!=nil{
-				sglog.Error("read data from file error,file:",file,err)
+			// file,_,err:=r.FormFile(name)
+			// if err!=nil{
+			// 	sglog.Error("read file error,file:",file,err)
+			// 	continue;
+			// }
+			// fileBytes,err:=ioutil.ReadAll(file)
+			// if err!=nil{
+			// 	sglog.Error("read data from file error,file:",file,err)
+			// 	continue
+			// }
+			fileBytes:=make([]byte,10000)
+			num,err:=part.Read(fileBytes)
+			if err!=nil&&err!=io.EOF{
+				sglog.Error("read part file error,file:",filename,err)
 				continue
 			}
-			filePath:="./data"
-			if _,_,err:=sgfile.WriteFile(filePath,filename,fileBytes);err!=nil{
-				sglog.Error("write to file file error,file:",file,err)
+			sglog.Info("read part file success,num:",num)
+			part.Close()
+
+			filePath:="./data/"
+			wrieteFileName:=sgstring.RandStringAndNumRunes(4)
+			if _,_,err:=sgfile.WriteFile(filePath,wrieteFileName,fileBytes[:num]);err!=nil{
+				sglog.Error("write to file file error,file:",wrieteFileName,err)
 				continue
 			}
 		}
