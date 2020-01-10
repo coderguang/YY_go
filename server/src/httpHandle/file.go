@@ -1,6 +1,7 @@
 package httpHandle
 
 import (
+	"strconv"
 	"io"
 	"github.com/coderguang/GameEngine_go/sgfile"
 	"github.com/coderguang/GameEngine_go/sgstring"
@@ -9,6 +10,11 @@ import (
 	"github.com/coderguang/GameEngine_go/sglog"
 	"net/http"
 )
+
+func returnErrStr(errcode int)string{
+	return "{\"errcode\":"+strconv.Itoa(errcode)+"}"
+}
+
 
 
 func ReceiveClientData(w http.ResponseWriter, r *http.Request, flag chan bool) {
@@ -22,18 +28,22 @@ func ReceiveClientData(w http.ResponseWriter, r *http.Request, flag chan bool) {
 	err:=sghttp.CheckFileMaxSize(w,r,10240)
 	if err!=nil{
 		sglog.Error("file size too big,",err)
+		w.Write([]byte(returnErrStr(1)))
 		return 
 	}
 
 	file, _, err := r.FormFile("sg")	
 	if err != nil {	
 		sglog.Error("get form data error,",err)
+		w.Write([]byte(returnErrStr(1)))
 		return 
 	}
 
 	contentType,err:=sghttp.GetFileDetectContentType(file)
 	if err!=nil{
 		sglog.Error("get form file detect type error,",contentType,err)
+		w.Write([]byte(returnErrStr(1)))
+		return;
 	}
 
 	sglog.Info("contentType:",contentType)
@@ -41,6 +51,7 @@ func ReceiveClientData(w http.ResponseWriter, r *http.Request, flag chan bool) {
 	fileBytes, err := ioutil.ReadAll(file)
 	if err != nil {
 		sglog.Error("read all file error:",err)
+		w.Write([]byte(returnErrStr(1)))
 		return 
 	}
 
@@ -49,10 +60,12 @@ func ReceiveClientData(w http.ResponseWriter, r *http.Request, flag chan bool) {
 
 	if _,_,err:=sgfile.WriteFile(filePath,filename,fileBytes);err!=nil{
 		sglog.Error("write file error");
+		w.Write([]byte(returnErrStr(1)))
 		return;
 	}
 
 	sglog.Info("receive and write file ok");
+	w.Write([]byte(returnErrStr(0)))
 }
 
 
@@ -99,6 +112,7 @@ func ReceiveMultiClientData(w http.ResponseWriter,r *http.Request,flag chan bool
 
 	if err!=nil{
 		sglog.Error("r.MultipartReader err",err);
+		w.Write([]byte(returnErrStr(1)))
 		return
 	}	
 
@@ -141,4 +155,5 @@ func ReceiveMultiClientData(w http.ResponseWriter,r *http.Request,flag chan bool
 
 
 	sglog.Info("receive ReceiveMultiClientData send data complete");
+	w.Write([]byte(returnErrStr(0)))
 }

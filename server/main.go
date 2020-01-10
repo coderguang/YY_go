@@ -17,7 +17,7 @@ func TestPost(cmd []string) {
 	if len(cmd) > 1 {
 		filename = cmd[1]
 	}
-	url := "http://10.20.201.244:7000"
+	url := "http://localhost:7000"
 	resp, err := sghttp.PostFile(filename, url, "sg")
 	if err != nil {
 		sglog.Error("post file error", err)
@@ -39,7 +39,7 @@ func TestMultiPost(cmd []string) {
 	keyMap["k2"] = "k2222"
 	keyMap["k3"] = "k3333"
 
-	url := "http://10.20.201.244:7000"
+	url := "http://localhost:7000"
 	resp, err := sghttp.PostMultiFormFile(url, fileMap, keyMap)
 	if err != nil {
 		sglog.Error("post file error", err)
